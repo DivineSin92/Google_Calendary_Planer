@@ -71,6 +71,18 @@ def main():
         except HttpError as error:
             print('Error: %s' % error)
 
+    if program == 3:
+        service = build('calendar', 'v3', credentials=creds)
+        event = {
+        'summary': 'Name of Event', 'location': 'Location of event', 'description': 'Description of event',
+        'start': {'dateTime': '2023-10-19T10:20:00-00:00', 'timeZone': 'Europe/Warsaw',},
+        'end': {'dateTime': '2023-10-19T20:10:00-00:00','timeZone': 'Europe/Warsaw',},
+        'recurrence': ['RRULE:FREQ=DAILY;COUNT=1'],
+        'reminders': {'useDefault': False,'overrides': [{'method': 'email', 'minutes': 24 * 60},{'method': 'popup', 'minutes': 60},],},
+        }
+        event = service.events().insert(calendarId='primary', body=event).execute()
+        print ('Event created')
+
 
 if __name__ == '__main__':
     main()
