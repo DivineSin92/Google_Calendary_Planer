@@ -72,16 +72,30 @@ def main():
             print('Error: %s' % error)
 
     if program == 3:
-        service = build('calendar', 'v3', credentials=creds)
-        event = {
-        'summary': 'Name of Event', 'location': 'Location of event', 'description': 'Description of event',
-        'start': {'dateTime': '2023-10-19T10:20:00-00:00', 'timeZone': 'Europe/Warsaw',},
-        'end': {'dateTime': '2023-10-19T20:10:00-00:00','timeZone': 'Europe/Warsaw',},
-        'recurrence': ['RRULE:FREQ=DAILY;COUNT=1'],
-        'reminders': {'useDefault': False,'overrides': [{'method': 'email', 'minutes': 24 * 60},{'method': 'popup', 'minutes': 60},],},
-        }
-        event = service.events().insert(calendarId='primary', body=event).execute()
-        print ('Event created')
+        Name_of_Event = input('Add name to your event: ')
+        Location_of_Event = input('Add location of event: ')
+        Desc_of_Event = input('Add some description: ')
+        Date_of_new_Event = input('What day is this supposed to happen? (YYYY-MM-DD) ')
+        Time_of_start_Event = input('Add time of start: (HH:MM) ')
+        Time_of_end_Event = input('Add time of end: (HH:MM) ')
+        format_of_date = '%Y-%m-%d'
+        format_of_time = '%H:%M'
+        try:
+            date_check = datetime.datetime.strptime(Date_of_new_Event, format_of_date)
+            time_s_check = datetime.datetime.strptime(Time_of_start_Event, format_of_time)
+            time_e_check = datetime.datetime.strptime(Time_of_end_Event, format_of_time)
+            service = build('calendar', 'v3', credentials=creds)
+            event = {
+            'summary': f'{Name_of_Event}', 'location': f'{Location_of_Event}', 'description': f'{Desc_of_Event}',
+            'start': {'dateTime': f'{Date_of_new_Event}T{Time_of_start_Event}:00-00:00', 'timeZone': 'Europe/Warsaw',},
+            'end': {'dateTime': f'{Date_of_new_Event}T{Time_of_end_Event}:00-00:00','timeZone': 'Europe/Warsaw',},
+            'recurrence': ['RRULE:FREQ=DAILY;COUNT=1'],
+            'reminders': {'useDefault': False,'overrides': [{'method': 'email', 'minutes': 24 * 60},{'method': 'popup', 'minutes': 60},],},
+            }
+            event = service.events().insert(calendarId='primary', body=event).execute()
+            print (f'Event {Name_of_Event} created')
+        except ValueError:
+            print('Incorect date format')
 
 
 if __name__ == '__main__':
