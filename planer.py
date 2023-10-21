@@ -97,6 +97,18 @@ def main():
         except ValueError:
             print('Incorect date format')
 
+    if program == 4:
+        searching = input('Give me the word you searching for: ')
+        service = build('calendar', 'v3', credentials=creds)
+        events_result = service.events().list(calendarId='primary', q = f'{searching}').execute()
+        events = events_result.get('items', [])
+        for event in events:
+            start = event['start'].get('dateTime', event['start'].get('date'))
+            end = event['end'].get('dateTime', event['end'].get('date'))
+            print( 'name:  ' + event['summary'] + '\n' + 'start: ' + start + '\n' + 'end:   ' + end + '\n')
+        if not events:
+            print('You dont have event(s) like this')
+
 
 if __name__ == '__main__':
     main()
